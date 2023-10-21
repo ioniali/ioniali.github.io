@@ -6,24 +6,31 @@ const searchButton = document.getElementById('search-button');
 
 const summonerArray = [];
 
+function removeItemFromArray(array, item) {
+    const index = array.indexOf(item);
+    if (index !== -1) {
+        array.splice(index, 1);
+    }
+}
+
 function appendSummoner(platformId, summonerName){
+    const summoner = {platformId: platformId, summonerName: summonerName};
     const divItem = document.createElement('div');
     divItem.className = 'grid';
-    divItem.style.border = '1px solid rgb(187, 198, 206)';
-    divItem.style.borderRadius = '0.25rem';
 
-    const hItem = document.createElement('h4');
-    hItem.textContent = `${platformId} ${summonerName}`;
-    divItem.appendChild(hItem);
+    const labelItem = document.createElement('label');
+    labelItem.textContent = `${platformId} ${summonerName}`;
+    divItem.appendChild(labelItem);
     
     const buttomItem = document.createElement('button');
     buttomItem.textContent = 'Remove';
     buttomItem.addEventListener('click', () => {
         summonerList.removeChild(divItem);
+        removeItemFromArray(summonerArray, summoner);
     });
     divItem.appendChild(buttomItem);
 
-    summonerArray.push({platformId: platformId, summonerName: summonerName});
+    summonerArray.push(summoner);
 
     summonerList.appendChild(divItem);
     summonerNameInput.value = '';
