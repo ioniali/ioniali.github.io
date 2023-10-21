@@ -42,7 +42,7 @@ searchButton.addEventListener('click', function() {
             for (const summoner of summonerArray){
                 params.push(`${summoner.platformId}_${summoner.summonerName}`);
             }
-            window.location.href  = 'result.html?summoners=' + params.join(',');
+            window.location.href  = 'result?summoners=' + params.join(',');
         }
     }
     else {
