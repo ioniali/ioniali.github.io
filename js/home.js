@@ -9,6 +9,8 @@ const summonerArray = [];
 function appendSummoner(platformId, summonerName){
     const divItem = document.createElement('div');
     divItem.className = 'grid';
+    divItem.style.border = '1px solid rgb(187, 198, 206)';
+    divItem.style.borderRadius = '0.25rem';
 
     const hItem = document.createElement('h4');
     hItem.textContent = `${platformId} ${summonerName}`;
