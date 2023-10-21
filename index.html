@@ -3,8 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Test</title>
+  <link rel="stylesheet" href="../pico/css/pico.min.css">
+  <title>PornHub</title>
 </head>
 <body>
+  <main class="container">
+    <div class="grid">
+      <form id="summoner-form">
+        <div class="grid">
+          <label for="Region">
+            Region
+            <select id="region-select">
+              <option value="EUW1">Europe West</option>
+              <option value="TR1">Turkey</option>
+            </select>
+          </label>
+
+          <label for="summonerName">
+            Summoner name
+            <input type="text" id="summonerName" name="summonerName" placeholder="Summoner name" required>
+          </label>
+
+          <button type="button" id="append-button" style="width: 75%; height: 75%;">Append</button>
+          <button type="button" id="search-button" style="width: 75%; height: 75%;">Search</button>
+        </div>
+        <ul id="summoner-list" style="width: 25%; margin-left: 25%;">
+          <!-- Summoner items will be added here -->
+        </ul>
+      </form>
+    </div>
+  </main>
+
+  <script src="index.js"></script>
 </body>
 </html>
