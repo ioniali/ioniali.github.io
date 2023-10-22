@@ -103,9 +103,10 @@ async function main(){
         tableRowHead.style.textAlign = 'center';
 
         const headImage = document.createElement('img');
-        headImage.src = `image/champion/${championName.toLowerCase()}.png`;
+        headImage.src = `/image/champion/${championName.toLowerCase()}.png`;
         headImage.style.width = '36px';
         headImage.style.height = '36px';
+        headImage.style['border-radius'] = '50%';
         tableRowHead.appendChild(headImage);
 
         tableRow.appendChild(tableRowHead);
