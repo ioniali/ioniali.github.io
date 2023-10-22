@@ -1,4 +1,5 @@
 const tableBody = document.getElementById('table-body');
+const fetchProgress = document.getElementById('fetch-progress');
 
 function getSummonerArray(){
     const url = new URL(window.location.href);
@@ -91,6 +92,8 @@ async function main(){
     }
 
     championArray.sort();
+
+    fetchProgress.remove();
     
     for (const championName of championArray){
         const tableRow = document.createElement('tr');
