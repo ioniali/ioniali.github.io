@@ -35,15 +35,19 @@ function appendSummoner(platformId, summonerName){
     const summoner = {platformId: platformId, summonerName: summonerName};
 
     const gridItem = createGrid();
-    const labelItem = createLabel(`${platformId}\t${summonerName}`);
+
+    const platformIdLabel = createLabel(platformId);
+    const summonerNameLabel = createLabel(summonerName);
     const buttonItem = createButton('Remove');
 
+    buttonItem.style.width = '60%';
     buttonItem.addEventListener('click', () => {
         summonerList.removeChild(gridItem);
         removeItemFromArray(summonerArray, summoner);
     });
 
-    gridItem.appendChild(labelItem);
+    gridItem.appendChild(platformIdLabel);
+    gridItem.appendChild(summonerNameLabel);
     gridItem.appendChild(buttonItem);
     summonerList.appendChild(gridItem);
     summonerNameInput.value = '';
