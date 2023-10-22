@@ -106,8 +106,6 @@ async function main(){
         headImage.src = `image/champion/${championName.toLowerCase()}.png`;
         headImage.style.width = '35px';
         headImage.style.height = '35px';
-        headImage.style.border = '1px solid rgba(187, 198, 206, 0.75)';
-        headImage.style.borderRadius = '50%';
         tableRowHead.appendChild(headImage);
 
         tableRow.appendChild(tableRowHead);
