@@ -1,5 +1,5 @@
-const summonerList = document.getElementById('summoner-list');
-const summonerNameInput = document.getElementById('summonerName');
+const summonersDiv = document.getElementById('summoners-div');
+const summonerNameInput = document.getElementById('summoner-name-input');
 const regionSelect = document.getElementById('region-select');
 const appendButton = document.getElementById('append-button');
 const searchButton = document.getElementById('search-button');
@@ -51,7 +51,7 @@ function appendSummoner(platformId, summonerName){
     gridItem.appendChild(platformIdLabel);
     gridItem.appendChild(summonerNameLabel);
     gridItem.appendChild(buttonItem);
-    summonerList.appendChild(gridItem);
+    summonersDiv.appendChild(gridItem);
     summonerNameInput.value = '';
 
     summonerArray.push(summoner);
@@ -77,6 +77,7 @@ searchButton.addEventListener('click', function(){
     const summonerName = summonerNameInput.value.trim();
     if (summonerName === ''){
         if (summonerArray.length > 0){
+            searchButton.style['aria-busy'] = 'true';
             const params = [];
             for (const summoner of summonerArray){
                 params.push(`${summoner.platformId}_${summoner.summonerName}`);
