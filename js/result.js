@@ -103,7 +103,7 @@ async function main(){
         tableRowHead.style.textAlign = 'center';
 
         const headImage = document.createElement('img');
-        headImage.src = `https://ddragon.leagueoflegends.com/cdn/13.20.1/img/champion/${championName}.png`;
+        headImage.src = `images/champions/${championName.toLowerCase()}.png`;
         headImage.style.width = '35px';
         headImage.style.height = '35px';
         headImage.style.border = '1px solid rgba(187, 198, 206, 0.75)';
