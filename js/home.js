@@ -44,7 +44,7 @@ function appendSummoner(platformId, summonerName){
     buttonItem.style['font-size'] = '15px';
     
     buttonItem.addEventListener('click', () => {
-        summonerList.removeChild(gridItem);
+        summonersDiv.removeChild(gridItem);
         removeItemFromArray(summonerArray, summoner);
     });
 
