@@ -104,8 +104,8 @@ async function main(){
 
         const headImage = document.createElement('img');
         headImage.src = `image/champion/${championName.toLowerCase()}.png`;
-        headImage.style.width = '35px';
-        headImage.style.height = '35px';
+        headImage.style.width = '36px';
+        headImage.style.height = '36px';
         tableRowHead.appendChild(headImage);
 
         tableRow.appendChild(tableRowHead);
