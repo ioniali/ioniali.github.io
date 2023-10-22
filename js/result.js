@@ -54,7 +54,7 @@ async function main(){
     for (const summoner of summonerArray){
         if (isPlatformIdValid(summoner.platformId) && isSummonerNameValid(summoner.summonerName)){
             try {
-                const response = await fetch(`http://46.101.113.177:3000/api/scores/${summoner.platformId}/${summoner.summonerName}`);
+                const response = await fetch(`https://jarvan.ddns.net/api/scores/${summoner.platformId}/${summoner.summonerName}`);
                 const dataArray = await response.json();
                 
                 for (const data of dataArray){
@@ -100,7 +100,7 @@ async function main(){
         tableRowHead.style.textAlign = 'center';
 
         const headImage = document.createElement('img');
-        headImage.src = `http://ddragon.leagueoflegends.com/cdn/13.20.1/img/champion/${championName}.png`;
+        headImage.src = `https://ddragon.leagueoflegends.com/cdn/13.20.1/img/champion/${championName}.png`;
         headImage.style.width = '35px';
         headImage.style.height = '35px';
         headImage.style.border = '1px solid rgba(187, 198, 206, 0.75)';
