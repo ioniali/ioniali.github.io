@@ -37,11 +37,11 @@ function appendSummoner(platformId, summonerName){
     const gridItem = createGrid();
 
     const platformIdLabel = createLabel(platformId);
-    platformIdLabel.style['font-size'] = '15';
+    platformIdLabel.style['font-size'] = '15px';
     const summonerNameLabel = createLabel(summonerName);
-    summonerNameLabel.style['font-size'] = '15';
+    summonerNameLabel.style['font-size'] = '15px';
     const buttonItem = createButton('Remove');
-    buttonItem.style['font-size'] = '15';
+    buttonItem.style['font-size'] = '15px';
     
     buttonItem.addEventListener('click', () => {
         summonerList.removeChild(gridItem);
