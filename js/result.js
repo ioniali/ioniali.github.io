@@ -16,7 +16,7 @@ function getSummonerArray(){
 }
 
 function fixString(string){
-    string = string.replace(/\s/g, '');
+    string = string.replace(/[^a-zA-Z0-9]/g, '');
     return string.toLowerCase();
 }
 
