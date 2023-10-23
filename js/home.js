@@ -35,6 +35,7 @@ function appendSummoner(platformId, summonerName){
     const summoner = {platformId: platformId, summonerName: summonerName};
 
     const gridItem = createGrid();
+    gridItem.style['align-items'] = 'center';
 
     const platformIdLabel = createLabel(platformId);
     platformIdLabel.style['font-size'] = '15px';
