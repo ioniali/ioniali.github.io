@@ -104,9 +104,11 @@ async function main(){
 
         const headImage = document.createElement('img');
         headImage.src = `/image/champion/${championName.toLowerCase()}.png`;
-        headImage.style.width = '36px';
-        headImage.style.height = '36px';
-        headImage.style['border-radius'] = '50%';
+        headImage.style = {
+            width: '36px',
+            height: '36px',
+            'border-radius': '50%'
+        };
         tableRowHead.appendChild(headImage);
 
         tableRow.appendChild(tableRowHead);
@@ -114,8 +116,10 @@ async function main(){
         for (const position of positionArray){
             const value = dataFrame[position][championName];
             const tableData = document.createElement('td');
-            tableData.style.textAlign = 'center';
-            tableData.style['font-size'] = '13px';
+            tableData.style = {
+                textAlign: 'center',
+                'font-size': '13px'
+            };
             if (value === 0){
                 tableData.textContent = '-';
             }
