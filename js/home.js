@@ -32,7 +32,7 @@ function appendSummonerElement(platformId, summonerName){
     platformIdLabel.style = {'font-size': '15px'};
 
     const removeButton = document.createElement('button');
-    removeButton.textContent = textContent;
+    removeButton.textContent = 'Remove';
     removeButton.style = {
         'font-size': '15px',
         'margin-bottom': '0'
