@@ -18,25 +18,21 @@ function appendSummonerElement(platformId, summonerName){
 
     const summonerGrid = document.createElement('div');
     summonerGrid.className = 'grid';
-    summonerGrid.style = {
-        'align-items': 'center',
-        'margin-bottom': '10px'
-    };
+    summonerGrid.style.alignItems = 'center';
+    summonerGrid.style.marginBottom = '10px';
 
     const platformIdLabel = document.createElement('label');
     platformIdLabel.textContent = platformId;
-    platformIdLabel.style = {'font-size': '15px'};
+    platformIdLabel.style.fontSize = '15px';
 
     const summonerNameLabel = document.createElement('label');
-    platformIdLabel.textContent = summonerName;
-    platformIdLabel.style = {'font-size': '15px'};
+    summonerNameLabel.textContent = summonerName;
+    summonerNameLabel.style.fontSize = '15px';
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
-    removeButton.style = {
-        'font-size': '15px',
-        'margin-bottom': '0'
-    };
+    removeButton.style.fontSize = '15px';
+    removeButton.style.marginBottom = '0';
     
     removeButton.addEventListener('click', () => {
         summonersDiv.removeChild(summonerGrid);
@@ -77,7 +73,6 @@ searchButton.addEventListener('click', function(){
     const summonerName = summonerNameInput.value.trim();
     if (summonerName === ''){
         if (summonerArray.length > 0){
-            searchButton.style['aria-busy'] = 'true';
             const params = [];
             for (const summoner of summonerArray){
                 let platformId = summoner.platformId;
