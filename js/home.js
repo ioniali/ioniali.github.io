@@ -22,7 +22,7 @@ function appendSummonerElement(platformId, summonerName){
     summonerGrid.style.marginBottom = '10px';
 
     const platformIdLabel = document.createElement('label');
-    platformIdLabel.textContent = platformId;
+    platformIdLabel.textContent = platformId.replace(/\d+/g, '');
     platformIdLabel.style.fontSize = '15px';
 
     const summonerNameLabel = document.createElement('label');
@@ -52,7 +52,6 @@ appendButton.addEventListener('click', function(){
     if (summonerName !== '' && summonerName.length > 2){
         let platformId = regionSelect.value;
         let summonerName = summonerNameInput.value;
-        platformId = platformId.replace(/\d+/g, '');
         summonerName = summonerName.trim();
 
         summonerNameInput.value = '';
