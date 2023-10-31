@@ -3,11 +3,29 @@ const progressElement = document.getElementById('progress');
 const checkboxQueueId420Element = document.getElementById('queue-id-420');
 const checkboxQueueId440Element = document.getElementById('queue-id-440');
 
+let queueId420 = localStorage.getItem('queueId420');
+if (queueId420 !== null){
+    checkboxQueueId420Element.checked = (queueId420 === 'true');
+}
+
+let queueId440 = localStorage.getItem('queueId440');
+if (queueId440 !== null){
+    checkboxQueueId440Element.checked = (queueId440 === 'true');
+}
+
 const topSumDataElement = document.getElementById('top-sum');
 const jungleSumDataElement = document.getElementById('jungle-sum');
 const middleSumDataElement = document.getElementById('middle-sum');
 const bottomSumDataElement = document.getElementById('bottom-sum');
 const utilitySumDataElement = document.getElementById('utility-sum');
+
+checkboxQueueId420Element.addEventListener('change', () => {
+    localStorage.setItem('queueId420', checkboxQueueId420Element.checked);
+});
+
+checkboxQueueId440Element.addEventListener('change', () => {
+    localStorage.setItem('queueId440', checkboxQueueId440Element.checked);
+});
 
 function getSummonerArray(){
     const url = new URL(window.location.href);
@@ -49,7 +67,7 @@ function sumArray(array){
 }
 
 async function fetchSummoner(platformId, summonerName){
-    if (isPlatformIdValid(summoner.platformId) && isSummonerNameValid(summoner.summonerName)){
+    if (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName)){
         try {
             const response = await fetch(`https://jarvan.ddns.net/api/scores/${platformId}/${summonerName}`);
             const data = await response.json();
