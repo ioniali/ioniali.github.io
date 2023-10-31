@@ -55,11 +55,11 @@ async function main(){
     for (const summoner of summonerArray){
         if (isPlatformIdValid(summoner.platformId) && isSummonerNameValid(summoner.summonerName)){
             try {
-                const response = await fetch(`https://jarvan.ddns.net/api/scores/${summoner.platformId}/${summoner.summonerName}`);
-                const dataArray = await response.json();
+                const response = await fetch(`https://jarvan.ddns.net/api/data/${summoner.platformId}/${summoner.summonerName}`);
+                const player = await response.json();
                 
-                for (const data of dataArray){
-                    const { championName, individualPosition, score } = data;
+                for (const matchData of [...player.matches['420'], ...player.matches['440']]){
+                    const { championName, individualPosition, score } = matchData;
                     if (!championArray.includes(championName)){
                         for (const position of positionArray){
                             dataFrame[position][championName] = 0;
