@@ -1,17 +1,5 @@
 const tableBodyElement = document.getElementById('table-body');
 const progressElement = document.getElementById('progress');
-const checkboxQueueId420Element = document.getElementById('queue-id-420');
-const checkboxQueueId440Element = document.getElementById('queue-id-440');
-
-let queueId420 = localStorage.getItem('queueId420');
-if (queueId420 !== null){
-    checkboxQueueId420Element.checked = (queueId420 === 'true');
-}
-
-let queueId440 = localStorage.getItem('queueId440');
-if (queueId440 !== null){
-    checkboxQueueId440Element.checked = (queueId440 === 'true');
-}
 
 const topSumDataElement = document.getElementById('top-sum');
 const jungleSumDataElement = document.getElementById('jungle-sum');
