@@ -152,8 +152,8 @@ function renderPlayer(summoner, league){
     </div>
 </div>
 `;
-    const element = document.createElement('div');
-    element.innerHTML = htmlStr;
+    const htmlParser = new DOMParser();
+    const element = htmlParser.parseFromString(htmlStr, 'text/html');
     playerListElement.appendChild(element);
 }
 
@@ -214,6 +214,15 @@ class Player {
         const regionElement = this.createRegionElement();
         const levelElement = this.createLevelElement();
     }
+}
+
+function resetTable(){
+    tableBodyElement.innerHTML = '';
+    topSumDataElement.textContent = '0';
+    jungleSumDataElement.textContent = '0';
+    middleSumDataElement.textContent = '0';
+    bottomSumDataElement.textContent = '0';
+    utilitySumDataElement.textContent = '0';
 }
 
 class Table {
@@ -291,7 +300,6 @@ class Table {
     }
 
     update(){
-        tableBodyElement.innerHTML = '';
         for (const championName of this.championArray){
             const rowElement = this.createRowElement(championName);
             tableBodyElement.appendChild(rowElement);
