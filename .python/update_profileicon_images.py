@@ -10,7 +10,7 @@ def get_profileicon_images(version):
     return response.json()['data']
 
 def download_image(version, name, path):
-    response = requests.get(f'https://ddragon.leagueoflegends.com/cdn/{version}/img/champion/{name}.png')
+    response = requests.get(f'https://ddragon.leagueoflegends.com/cdn/{version}/img/profileicon/{name}.png')
     with open(path, 'wb') as file:
         file.write(response.content)
 

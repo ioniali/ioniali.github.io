@@ -1,5 +1,6 @@
 const tableBodyElement = document.getElementById('table-body');
 const progressElement = document.getElementById('progress');
+const playerListElement = document.getElementById('player-list');
 
 const topSumDataElement = document.getElementById('top-sum');
 const jungleSumDataElement = document.getElementById('jungle-sum');
@@ -75,11 +76,85 @@ function fetchAllSummoners(){
     return Promise.all(promises);
 }
 
-function renderPlayer(player){
+function renderPlayer(summoner, league){
     const htmlStr = 
 `
-<button></button>    
+<div>
+    <img src="/image/profileicon/${summoner.profileIconId}.png">
+    <div>
+        <label>${summoner.name}</label>
+        <label>${summoner.platformId}</label>
+    </div>
+    <label>${summoner.summonerLevel}</label>
+</div>
+
+<div>
+    <img src="/image/tier/${league.solo.tier}.png">
+    <div>
+        <div>
+            <label>${league.solo.tier}</label>
+            <label>${league.solo.rank}</label>
+        </div>
+        <label>${league.solo.leaguePoints}</label>
+    </div>
+    <div>
+        <label>${league.solo.wins}W ${league.solo.losses}L</label>
+        <label>Win Rate ${league.solo.winRate}%</label>
+    </div>
+</div>
+
+<div>
+    <img src="/image/tier/${league.flex.tier}.png">
+    <div>
+        <div>
+            <label>${league.flex.tier}</label>
+            <label>${league.flex.rank}</label>
+        </div>
+        <label>${league.flex.leaguePoints}</label>
+    </div>
+    <div>
+        <label>${league.flex.wins}W ${league.flex.losses}L</label>
+        <label>Win Rate ${league.flex.winRate}%</label>
+    </div>
+</div>
+
+<div>
+    <label>
+        <input type="checkbox">
+        SOLO/DUO
+    </label>
+    <label>
+        <input type="checkbox">
+        FLEX
+    </label>
+</div>
+
+<div>
+    <div>
+        <input type="checkbox">
+        <img src="/image/position/top.png">
+    </div>
+    <div>
+        <input type="checkbox">
+        <img src="/image/position/jungle.png">
+    </div>
+    <div>
+        <input type="checkbox">
+        <img src="/image/position/middle.png">
+    </div>
+    <div>
+        <input type="checkbox">
+        <img src="/image/position/bottom.png">
+    </div>
+    <div>
+        <input type="checkbox">
+        <img src="/image/position/utility.png">
+    </div>
+</div>
 `;
+    const element = document.createElement('div');
+    element.innerHTML = htmlStr;
+    playerListElement.appendChild(element);
 }
 
 class Player {
