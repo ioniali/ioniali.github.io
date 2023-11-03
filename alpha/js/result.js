@@ -7,14 +7,6 @@ const middleSumDataElement = document.getElementById('middle-sum');
 const bottomSumDataElement = document.getElementById('bottom-sum');
 const utilitySumDataElement = document.getElementById('utility-sum');
 
-checkboxQueueId420Element.addEventListener('change', () => {
-    localStorage.setItem('queueId420', checkboxQueueId420Element.checked);
-});
-
-checkboxQueueId440Element.addEventListener('change', () => {
-    localStorage.setItem('queueId440', checkboxQueueId440Element.checked);
-});
-
 function getSummonerArray(){
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
@@ -81,6 +73,72 @@ function fetchAllSummoners(){
     }
 
     return Promise.all(promises);
+}
+
+function renderPlayer(player){
+    const htmlStr = 
+`
+<button></button>    
+`;
+}
+
+class Player {
+    constructor(summoner, league){
+        this.summoner = summoner;
+        this.league = league;
+    }
+
+    createIconElement(){
+        const img = document.createElement('img');
+        img.src = `/image/profileicon/${this.summoner.profileIconId}.png`;
+        return img;
+    }
+
+    createNameElement(){
+        const label = document.createElement('label');
+        label.textContent = this.summoner.name;
+        return label;
+    }
+
+    createRegionElement(){
+        const label = document.createElement('label');
+        label.textContent = this.summoner.platformId;
+        return label;
+    }
+
+    createLevelElement(){
+        const label = document.createElement('label');
+        label.textContent = this.summoner.summonerLevel;
+        return label;
+    }
+
+    createTierElement(queueType){
+        const img = document.createElement('img');
+        img.src = `/image/tier/${this.league[queueType].tier}.png`;
+        return img;
+    }
+
+    createRankElement(queueType){
+        const label = document.createElement('label');
+        label.textContent = this.league[queueType].rank;
+        return label;
+    }
+
+    createLeaguePointsElement(queueType){
+        const label = document.createElement('label');
+        label.textContent = this.league[queueType].leaguePoints;
+        return label;
+    }
+
+    createQueueTypeElement
+
+    update(){
+        //row1
+        const iconElement = this.createIconElement();
+        const nameElement = this.createNameElement();
+        const regionElement = this.createRegionElement();
+        const levelElement = this.createLevelElement();
+    }
 }
 
 class Table {
