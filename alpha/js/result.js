@@ -170,6 +170,7 @@ class Table {
     }
 
     update(){
+        tableBodyElement.innerHTML = '';
         for (const championName of this.championArray){
             const rowElement = this.createRowElement(championName);
             tableBodyElement.appendChild(rowElement);
