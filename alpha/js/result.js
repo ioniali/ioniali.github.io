@@ -17,7 +17,7 @@ function getSummonerArray(){
         const parts = fixString(summoner).split('_');
         const platformId = parts[0];
         const summonerName = parts[1];
-        summonerArray.push({platformId: platformId, summonerName: summonerName});
+        summonerArray.push({platformId, summonerName});
     }
     return summonerArray;
 }
@@ -28,7 +28,7 @@ function fixString(string){
 }
 
 function isPlatformIdValid(platformId){
-    return ['euw1', 'tr1'].includes(platformId);
+    return ['euw', 'tr'].includes(platformId);
 }
 
 function isSummonerNameValid(summonerName){
@@ -90,7 +90,7 @@ function renderPlayer(summoner, league){
 </div>
 
 <div>
-    <img src="/image/tier/${league.solo.tier}.png">
+    <img src="/image/tier/${league.solo.tier.toLowerCase()}.png">
     <div>
         <div>
             <label>${league.solo.tier}</label>
@@ -105,7 +105,7 @@ function renderPlayer(summoner, league){
 </div>
 
 <div>
-    <img src="/image/tier/${league.flex.tier}.png">
+    <img src="/image/tier/${league.flex.tier.toLowerCase()}.png">
     <div>
         <div>
             <label>${league.flex.tier}</label>
@@ -119,68 +119,9 @@ function renderPlayer(summoner, league){
     </div>
 </div>
 `;
-    const htmlParser = new DOMParser();
-    const element = htmlParser.parseFromString(htmlStr, 'text/html');
+    const element = document.createElement('div');
+    element.innerHTML = htmlStr;
     playerListElement.appendChild(element);
-}
-
-class Player {
-    constructor(summoner, league){
-        this.summoner = summoner;
-        this.league = league;
-    }
-
-    createIconElement(){
-        const img = document.createElement('img');
-        img.src = `/image/profileicon/${this.summoner.profileIconId}.png`;
-        return img;
-    }
-
-    createNameElement(){
-        const label = document.createElement('label');
-        label.textContent = this.summoner.name;
-        return label;
-    }
-
-    createRegionElement(){
-        const label = document.createElement('label');
-        label.textContent = this.summoner.platformId;
-        return label;
-    }
-
-    createLevelElement(){
-        const label = document.createElement('label');
-        label.textContent = this.summoner.summonerLevel;
-        return label;
-    }
-
-    createTierElement(queueType){
-        const img = document.createElement('img');
-        img.src = `/image/tier/${this.league[queueType].tier}.png`;
-        return img;
-    }
-
-    createRankElement(queueType){
-        const label = document.createElement('label');
-        label.textContent = this.league[queueType].rank;
-        return label;
-    }
-
-    createLeaguePointsElement(queueType){
-        const label = document.createElement('label');
-        label.textContent = this.league[queueType].leaguePoints;
-        return label;
-    }
-
-    createQueueTypeElement
-
-    update(){
-        //row1
-        const iconElement = this.createIconElement();
-        const nameElement = this.createNameElement();
-        const regionElement = this.createRegionElement();
-        const levelElement = this.createLevelElement();
-    }
 }
 
 function resetTable(){
@@ -331,7 +272,7 @@ function getDataFrame(playerArray, queueIdArray){
 async function main(){
     const playerArray = await fetchAllSummoners();
 
-    const queueIdArray = [420, 440];
+    const queueIdArray = [420];
 
     const dataFrame = getDataFrame(playerArray, queueIdArray);
     const table = new Table(dataFrame);
