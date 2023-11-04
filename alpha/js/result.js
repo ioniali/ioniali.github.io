@@ -50,7 +50,7 @@ function sumArray(array){
 async function fetchSummoner(platformId, summonerName){
     if (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName)){
         try {
-            const response = await fetch(`https://jarvan.ddns.net/api/summoner/${platformId}/${summonerName}`);
+            const response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
             const data = await response.json();
             return data;
         }
