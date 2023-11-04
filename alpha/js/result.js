@@ -75,7 +75,7 @@ function renderPlayer(summoner, league){
     <img src="/image/profileicon/${summoner.profileIconId}.png" style="width: 60px; height: fit-content; border-radius: 50%;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
         <label style="font-size: 18px; font-weight: bold;">${summoner.name}</label>
-        <label style="font-size: 18px;">${summoner.platformId}</label>
+        <label style="font-size: 18px;">EUW</label>
     </div>
     <label style="font-size: 14px;">${summoner.summonerLevel} Level</label>
 </div>
@@ -267,6 +267,8 @@ class DataFrame {
 
 async function main(){
     const players = await fetchAllSummoners();
+    
+    progressElement.remove();
 
     const df = new DataFrame();
     df.setData(players);
