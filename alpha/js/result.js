@@ -2,11 +2,13 @@ const tableBodyElement = document.getElementById('table-body');
 const progressElement = document.getElementById('progress');
 const playerListElement = document.getElementById('player-list');
 
-const topSumDataElement = document.getElementById('top-sum');
-const jungleSumDataElement = document.getElementById('jungle-sum');
-const middleSumDataElement = document.getElementById('middle-sum');
-const bottomSumDataElement = document.getElementById('bottom-sum');
-const utilitySumDataElement = document.getElementById('utility-sum');
+const sumElements = {
+    TOP: document.getElementById('top-sum'),
+    JUNGLE: document.getElementById('jungle-sum'),
+    MIDDLE: document.getElementById('middle-sum'),
+    BOTTOM: document.getElementById('bottom-sum'),
+    UTILITY: document.getElementById('utility-sum'),
+}
 
 function getSummonerArray(){
     const url = new URL(window.location.href);
@@ -124,20 +126,19 @@ function renderPlayer(summoner, league){
     playerListElement.appendChild(element);
 }
 
-function resetTable(){
-    tableBodyElement.innerHTML = '';
-    topSumDataElement.textContent = '0';
-    jungleSumDataElement.textContent = '0';
-    middleSumDataElement.textContent = '0';
-    bottomSumDataElement.textContent = '0';
-    utilitySumDataElement.textContent = '0';
-}
-
 class Table {
     constructor(dataFrame){
         this.dataFrame = dataFrame;
         this.championArray = dataFrame.championArray;
         this.positionArray = dataFrame.positionArray;
+    }
+
+    reset(){
+        tableBodyElement.innerHTML = '';
+
+        for (const position of this.championArray){
+            sumElements[position].textContent = '0';
+        }
     }
 
     createHeadElement(championName){
@@ -191,20 +192,10 @@ class Table {
     }
 
     setFootData(){
-        const topSum = this.getPositionSum('TOP');
-        topSumDataElement.textContent = topSum.toFixed(2);
-        
-        const jungleSum = this.getPositionSum('JUNGLE');
-        jungleSumDataElement.textContent = jungleSum.toFixed(2);
-
-        const middleSum = this.getPositionSum('MIDDLE');
-        middleSumDataElement.textContent = middleSum.toFixed(2);
-
-        const bottomSum = this.getPositionSum('BOTTOM');
-        bottomSumDataElement.textContent = bottomSum.toFixed(2);
-
-        const utilitySum = this.getPositionSum('UTILITY');
-        utilitySumDataElement.textContent = utilitySum.toFixed(2);
+        for (const position of this.positionArray){
+            const sum = this.getPositionSum(position);
+            sumElements[position].textContent = sum.toFixed(1);
+        }
     }
 
     update(){
@@ -276,7 +267,7 @@ async function main(){
 
     const dataFrame = getDataFrame(playerArray, queueIdArray);
     const table = new Table(dataFrame);
-    resetTable();
+    table.reset();
     table.update();
 }
 
