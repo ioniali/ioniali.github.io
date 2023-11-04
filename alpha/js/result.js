@@ -74,8 +74,8 @@ function renderPlayer(summoner, league){
 <div style="display: flex;">
     <img src="/image/profileicon/${summoner.profileIconId}.png" style="width: 60px; height: fit-content; border-radius: 50%;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
-        <label style="font-size: 18px; font-weight: bold;">${summoner.name}</label>
-        <label style="font-size: 18px;">EUW</label>
+        <label style="font-size: 16px; font-weight: bold;">${summoner.name}</label>
+        <label style="font-size: 16px;">EUW</label>
     </div>
     <label style="font-size: 14px;">${summoner.summonerLevel} Level</label>
 </div>
@@ -84,14 +84,14 @@ function renderPlayer(summoner, league){
     <img src="/image/tier/${league.solo.tier.toLowerCase()}.png" style="width: 60px; height: fit-content;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
         <div style="display: flex;">
-            <label style="margin-right: 6px; font-size: 16px;">${league.solo.tier}</label>
-            <label style="font-size: 16px">${league.solo.rank}</label>
+            <label style="margin-right: 6px; font-size: 14px;">${league.solo.tier}</label>
+            <label style="font-size: 14px">${league.solo.rank}</label>
         </div>
-        <label style="font-size: 14px;">${league.solo.leaguePoints} LP</label>
+        <label style="font-size: 12px;">${league.solo.leaguePoints} LP</label>
     </div>
     <div>
-        <label style="font-size: 14px;">${league.solo.wins}W ${league.solo.losses}L</label>
-        <label style="font-size: 14px;">Win Rate ${league.solo.winRate}%</label>
+        <label style="font-size: 12px;">${league.solo.wins}W ${league.solo.losses}L</label>
+        <label style="font-size: 12px;">Win Rate ${league.solo.winRate}%</label>
     </div>
 </div>
 
@@ -99,14 +99,14 @@ function renderPlayer(summoner, league){
     <img src="/image/tier/${league.flex.tier.toLowerCase()}.png" style="width: 60px; height: fit-content;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
         <div style="display: flex;">
-            <label style="margin-right: 6px; font-size: 16px;">${league.flex.tier}</label>
-            <label style="font-size: 16px">${league.flex.rank}</label>
+            <label style="margin-right: 6px; font-size: 14px;">${league.flex.tier}</label>
+            <label style="font-size: 14px">${league.flex.rank}</label>
         </div>
-        <label style="font-size: 14px;">${league.flex.leaguePoints} LP</label>
+        <label style="font-size: 12px;">${league.flex.leaguePoints} LP</label>
     </div>
     <div>
-        <label style="font-size: 14px;">${league.flex.wins}W ${league.flex.losses}L</label>
-        <label style="font-size: 14px;">Win Rate ${league.flex.winRate}%</label>
+        <label style="font-size: 12px;">${league.flex.wins}W ${league.flex.losses}L</label>
+        <label style="font-size: 12px;">Win Rate ${league.flex.winRate}%</label>
     </div>
 </div>
 `;
