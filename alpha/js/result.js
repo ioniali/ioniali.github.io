@@ -111,8 +111,9 @@ function renderPlayer(summoner, league){
 </div>
 `;
     const element = document.createElement('article');
-    element.style.width = '375px';
+    element.style.width = 'fit-content';
     element.style.padding = '10px';
+    element.style.borderRadius = '5%';
     element.style.marginLeft = '10px';
     element.style.marginRight = '10px';
     element.innerHTML = htmlStr;
