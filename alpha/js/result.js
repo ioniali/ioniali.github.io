@@ -71,46 +71,50 @@ function fetchAllSummoners(){
 function renderPlayer(summoner, league){
     const htmlStr = 
 `
-<div>
-    <img src="/image/profileicon/${summoner.profileIconId}.png">
-    <div>
-        <label>${summoner.name}</label>
-        <label>${summoner.platformId}</label>
+<div style="display: flex;">
+    <img src="/image/profileicon/${summoner.profileIconId}.png" style="width: 60px; height: fit-content; border-radius: 50%;">
+    <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
+        <label style="font-size: 18px; font-weight: bold;">${summoner.name}</label>
+        <label style="font-size: 18px;">${summoner.platformId}</label>
     </div>
-    <label>${summoner.summonerLevel} Level</label>
+    <label style="font-size: 14px;">${summoner.summonerLevel} Level</label>
 </div>
 
-<div>
-    <img src="/image/tier/${league.solo.tier.toLowerCase()}.png">
-    <div>
-        <div>
-            <label>${league.solo.tier}</label>
-            <label>${league.solo.rank}</label>
+<div style="display: flex;">
+    <img src="/image/tier/${league.solo.tier.toLowerCase()}.png" style="width: 60px; height: fit-content;">
+    <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
+        <div style="display: flex;">
+            <label style="margin-right: 6px; font-size: 16px;">${league.solo.tier}</label>
+            <label style="font-size: 16px">${league.solo.rank}</label>
         </div>
-        <label>${league.solo.leaguePoints}</label>
+        <label style="font-size: 14px;">${league.solo.leaguePoints} LP</label>
     </div>
     <div>
-        <label>${league.solo.wins}W ${league.solo.losses}L</label>
-        <label>Win Rate ${league.solo.winRate}%</label>
+        <label style="font-size: 14px;">${league.solo.wins}W ${league.solo.losses}L</label>
+        <label style="font-size: 14px;">Win Rate ${league.solo.winRate}%</label>
     </div>
 </div>
 
-<div>
-    <img src="/image/tier/${league.flex.tier.toLowerCase()}.png">
-    <div>
-        <div>
-            <label>${league.flex.tier}</label>
-            <label>${league.flex.rank}</label>
+<div style="display: flex;">
+    <img src="/image/tier/${league.flex.tier.toLowerCase()}.png" style="width: 60px; height: fit-content;">
+    <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
+        <div style="display: flex;">
+            <label style="margin-right: 6px; font-size: 16px;">${league.flex.tier}</label>
+            <label style="font-size: 16px">${league.flex.rank}</label>
         </div>
-        <label>${league.flex.leaguePoints}</label>
+        <label style="font-size: 14px;">${league.flex.leaguePoints} LP</label>
     </div>
     <div>
-        <label>${league.flex.wins}W ${league.flex.losses}L</label>
-        <label>Win Rate ${league.flex.winRate}%</label>
+        <label style="font-size: 14px;">${league.flex.wins}W ${league.flex.losses}L</label>
+        <label style="font-size: 14px;">Win Rate ${league.flex.winRate}%</label>
     </div>
 </div>
 `;
-    const element = document.createElement('div');
+    const element = document.createElement('article');
+    element.style.width = '375px';
+    element.style.padding = '10px';
+    element.style.marginLeft = '10px';
+    element.style.marginRight = '10px';
     element.innerHTML = htmlStr;
     playerListElement.appendChild(element);
 }
