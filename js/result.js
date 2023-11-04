@@ -21,7 +21,7 @@ function fixString(string){
 }
 
 function isPlatformIdValid(platformId){
-    return ['euw1', 'tr1'].includes(platformId);
+    return ['euw', 'tr'].includes(platformId);
 }
 
 function isSummonerNameValid(summonerName){
