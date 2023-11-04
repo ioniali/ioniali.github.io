@@ -72,7 +72,7 @@ function renderPlayer(summoner, league){
     const htmlStr = 
 `
 <div style="display: flex;">
-    <img src="/image/profileicon/${summoner.profileIconId}.png" style="width: 60px; height: fit-content; border-radius: 50%;">
+    <img src="/image/profileicon/${summoner.profileIconId}.png" style="width: 48px; height: fit-content; border-radius: 50%;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
         <label style="font-size: 16px; font-weight: bold;">${summoner.name}</label>
         <label style="font-size: 16px;">EUW</label>
@@ -81,7 +81,7 @@ function renderPlayer(summoner, league){
 </div>
 
 <div style="display: flex;">
-    <img src="/image/tier/${league.solo.tier.toLowerCase()}.png" style="width: 60px; height: fit-content;">
+    <img src="/image/tier/${league.solo.tier.toLowerCase()}.png" style="width: 48px; height: fit-content;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
         <div style="display: flex;">
             <label style="margin-right: 6px; font-size: 14px;">${league.solo.tier}</label>
@@ -96,7 +96,7 @@ function renderPlayer(summoner, league){
 </div>
 
 <div style="display: flex;">
-    <img src="/image/tier/${league.flex.tier.toLowerCase()}.png" style="width: 60px; height: fit-content;">
+    <img src="/image/tier/${league.flex.tier.toLowerCase()}.png" style="width: 48px; height: fit-content;">
     <div style="margin-left: 10px; margin-right: 10px; width: 160px;">
         <div style="display: flex;">
             <label style="margin-right: 6px; font-size: 14px;">${league.flex.tier}</label>
