@@ -165,7 +165,7 @@ class Table {
         const headElement = this.createHeadElement(championName);
         rowElement.appendChild(headElement);
 
-        for (const position of this.positionArray){
+        for (const position of this.positions){
             const value = this.data[position][championName]
             const dataElement = this.createDataElement(value);
             rowElement.appendChild(dataElement);
@@ -183,15 +183,15 @@ class Table {
     }
 
     setFootData(){
-        for (const position of this.positionArray){
+        for (const position of this.positions){
             const sum = this.getPositionSum(position);
             sumElements[position].textContent = sum.toFixed(1);
         }
     }
 
     update(){
-        for (const championName of this.champions){
-            const rowElement = this.createRowElement(championName);
+        for (const champion of this.champions){
+            const rowElement = this.createRowElement(champion);
             tableBodyElement.appendChild(rowElement);
         }
         this.setFootData();
