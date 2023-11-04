@@ -1,8 +1,8 @@
-const summonersDiv = document.getElementById('summoners-div');
-const summonerNameInput = document.getElementById('summoner-name-input');
-const regionSelect = document.getElementById('region-select');
-const appendButton = document.getElementById('append-button');
-const searchButton = document.getElementById('search-button');
+const summonerDivElement = document.getElementById('summoners-div');
+const summonerNameInputElement = document.getElementById('summoner-name-input');
+const regionSelectElement = document.getElementById('region-select');
+const appendSummonerButtonElement = document.getElementById('append-button');
+const searchButtonElement = document.getElementById('search-button');
 
 const summonerArray = [];
 
@@ -14,49 +14,64 @@ function removeItemFromArray(array, item){
 }
 
 function appendSummonerElement(platformId, summonerName){
-    const summoner = {platformId: platformId, summonerName: summonerName};
+    const summoner = {platformId, summonerName};
 
-    const summonerGrid = document.createElement('div');
-    summonerGrid.className = 'grid';
-    summonerGrid.style.alignItems = 'center';
-    summonerGrid.style.marginBottom = '10px';
+    const containerElement = document.createElement('div');
+    containerElement.className = 'grid';
+    containerElement.style.alignItems = 'center';
+    containerElement.style.marginBottom = '10px';
 
-    const platformIdLabel = document.createElement('label');
-    platformIdLabel.textContent = platformId.replace(/\d+/g, '');
-    platformIdLabel.style.fontSize = '15px';
+    const regionElement = document.createElement('label');
+    regionElement.textContent = platformId;
+    regionElement.style.fontSize = '15px';
 
-    const summonerNameLabel = document.createElement('label');
-    summonerNameLabel.textContent = summonerName;
-    summonerNameLabel.style.fontSize = '15px';
+    const nameElement = document.createElement('label');
+    nameElement.textContent = summonerName;
+    nameElement.style.fontSize = '15px';
 
-    const removeButton = document.createElement('button');
-    removeButton.textContent = 'Remove';
-    removeButton.style.fontSize = '15px';
-    removeButton.style.marginBottom = '0';
+    const removeElement = document.createElement('button');
+    removeElement.textContent = 'Remove';
+    removeElement.style.fontSize = '15px';
+    removeElement.style.marginBottom = '0';
     
-    removeButton.addEventListener('click', () => {
-        summonersDiv.removeChild(summonerGrid);
+    removeElement.addEventListener('click', () => {
+        summonerDivElement.removeChild(containerElement);
         removeItemFromArray(summonerArray, summoner);
     });
 
-    summonerGrid.appendChild(platformIdLabel);
-    summonerGrid.appendChild(summonerNameLabel);
-    summonerGrid.appendChild(removeButton);
-    summonersDiv.appendChild(summonerGrid);
+    containerElement.appendChild(regionElement);
+    containerElement.appendChild(nameElement);
+    containerElement.appendChild(removeElement);
+    summonerDivElement.appendChild(containerElement);
 
     summonerArray.push(summoner);
 }
 
-appendButton.addEventListener('click', function(){
-    const summonerName = summonerNameInput.value.trim();
-    if (summonerName !== '' && summonerName.length > 2){
-        let platformId = regionSelect.value;
-        let summonerName = summonerNameInput.value;
-        summonerName = summonerName.trim();
-
-        summonerNameInput.value = '';
-        appendSummonerElement(platformId, summonerName);
+function getSummonerName(){
+    let summonerName = summonerNameInputElement.value;
+    summonerName = summonerName.trim();
+    if (summonerName === ''){
+        alert(`Summoner name can't be empty`);
     }
+    if (summonerName.length < 3){
+        alert(`Summoner name can't be shorter than 3 letters`);
+    }
+    if (summonerName.length > 16){
+        alert(`Summoner name can't be longer than 16 letters`);
+    }
+    summonerNameInputElement.value = '';
+    return summonerName;
+}
+
+function getRegion(){
+    return regionSelectElement.value;
+}
+
+appendSummonerButtonElement.addEventListener('click', function(){
+    const platformId = getRegion();
+    const summonerName = getSummonerName();
+
+    appendSummonerElement(platformId, summonerName);
 });
 
 function getParamsStr(){
@@ -67,21 +82,11 @@ function getParamsStr(){
     return params.join(',');
 }
 
-searchButton.addEventListener('click', function(){
-    const platformId = regionSelect.value;
-    const summonerName = summonerNameInput.value.trim();
-    if (summonerName === ''){
-        if (summonerArray.length > 0){
-            const params = [];
-            for (const summoner of summonerArray){
-                let platformId = summoner.platformId;
-                let summonerName = summoner.summonerName;
-                params.push(`${platformId}_${summonerName}`);
-            }
-            window.location.href  = 'result?summoners=' + getParamsStr();
-        }
+searchButtonElement.addEventListener('click', function(){
+    if (summonerArray.length > 0){
+        window.location.href  = 'result?summoners=' + getParamsStr();
     }
     else {
-        appendSummonerElement(platformId, summonerName);
+        alert('Summoner list is empty');
     }
 });
