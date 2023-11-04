@@ -52,6 +52,7 @@ async function fetchSummoner(platformId, summonerName){
         try {
             const response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
             const data = await response.json();
+            renderPlayer(data.summoner, data.league);
             return data;
         }
         catch (error){
@@ -115,40 +116,6 @@ function renderPlayer(summoner, league){
     <div>
         <label>${league.flex.wins}W ${league.flex.losses}L</label>
         <label>Win Rate ${league.flex.winRate}%</label>
-    </div>
-</div>
-
-<div>
-    <label>
-        <input type="checkbox">
-        SOLO/DUO
-    </label>
-    <label>
-        <input type="checkbox">
-        FLEX
-    </label>
-</div>
-
-<div>
-    <div>
-        <input type="checkbox">
-        <img src="/image/position/top.png">
-    </div>
-    <div>
-        <input type="checkbox">
-        <img src="/image/position/jungle.png">
-    </div>
-    <div>
-        <input type="checkbox">
-        <img src="/image/position/middle.png">
-    </div>
-    <div>
-        <input type="checkbox">
-        <img src="/image/position/bottom.png">
-    </div>
-    <div>
-        <input type="checkbox">
-        <img src="/image/position/utility.png">
     </div>
 </div>
 `;
@@ -364,12 +331,11 @@ function getDataFrame(playerArray, queueIdArray){
 async function main(){
     const playerArray = await fetchAllSummoners();
 
-    const queueIdArray = [];
-    if (checkboxQueueId420Element.checked) queueIdArray.push(420);
-    if (checkboxQueueId440Element.checked) queueIdArray.push(440);
+    const queueIdArray = [420, 440];
 
     const dataFrame = getDataFrame(playerArray, queueIdArray);
     const table = new Table(dataFrame);
+    resetTable();
     table.update();
 }
 
