@@ -253,7 +253,7 @@ class DataFrame {
             for (const match of player.score.list){
                 const { championName, individualPosition, score } = match;
 
-                addChampionIfNotExists(championName);
+                this.addChampionIfNotExists(championName);
                 this.data[individualPosition][championName] += score;
             }
         }
