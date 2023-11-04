@@ -14,14 +14,20 @@ function getSummonerArray(){
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
     const summoners = searchParams.get('summoners').split(',');
-    const summonerArray = [];
+    const array = [];
     for (const summoner of summoners){
         const parts = fixString(summoner).split('_');
         const platformId = parts[0];
         const summonerName = parts[1];
-        summonerArray.push({platformId, summonerName});
+        
+        if (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName)){
+            array.push({platformId, summonerName});
+        }
+        else {
+            console.error('Region or name is not valid');
+        }
     }
-    return summonerArray;
+    return array;
 }
 
 function fixString(string){
@@ -37,32 +43,15 @@ function isSummonerNameValid(summonerName){
     return !(summonerName.length > 16 || summonerName.length < 3);
 }
 
-function maxArray(array){
-    return Math.max(...array);
-}
-
-function sumArray(array){
-    var sum = 0;
-    for (const value of array){
-        sum += value;
-    }
-    return sum;
-}
-
 async function fetchSummoner(platformId, summonerName){
-    if (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName)){
-        try {
-            const response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
-            const data = await response.json();
-            renderPlayer(data.summoner, data.league);
-            return data;
-        }
-        catch (error){
-            throw new Error('fetch summoner failed');
-        }
+    try {
+        const response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
+        const player = await response.json();
+        renderPlayer(player.summoner, player.league);
+        return player;
     }
-    else {
-        throw new Error('platform id or summoner name is not valid');
+    catch (error){
+        console.error('Fetch summoner failed');
     }
 }
 
@@ -88,7 +77,7 @@ function renderPlayer(summoner, league){
         <label>${summoner.name}</label>
         <label>${summoner.platformId}</label>
     </div>
-    <label>${summoner.summonerLevel}</label>
+    <label>${summoner.summonerLevel} Level</label>
 </div>
 
 <div>
@@ -127,16 +116,15 @@ function renderPlayer(summoner, league){
 }
 
 class Table {
-    constructor(dataFrame){
-        this.dataFrame = dataFrame;
-        this.championArray = dataFrame.championArray;
-        this.positionArray = dataFrame.positionArray;
+    constructor(df){
+        this.data = df.data;
+        this.champions = df.champions;
+        this.positions = df.positions;
     }
 
     reset(){
         tableBodyElement.innerHTML = '';
-
-        for (const position of this.championArray){
+        for (const position of this.champions){
             sumElements[position].textContent = '0';
         }
     }
@@ -178,7 +166,7 @@ class Table {
         rowElement.appendChild(headElement);
 
         for (const position of this.positionArray){
-            const value = this.dataFrame[position][championName]
+            const value = this.data[position][championName]
             const dataElement = this.createDataElement(value);
             rowElement.appendChild(dataElement);
         }
@@ -187,8 +175,11 @@ class Table {
     }
 
     getPositionSum(position){
-        const array = this.championArray.map(championName => this.dataFrame[position][championName]);
-        return sumArray(array);
+        var sum = 0;
+        for (const champion of this.champions){
+            sum += this.data[position][champion];
+        }
+        return sum;
     }
 
     setFootData(){
@@ -199,7 +190,7 @@ class Table {
     }
 
     update(){
-        for (const championName of this.championArray){
+        for (const championName of this.champions){
             const rowElement = this.createRowElement(championName);
             tableBodyElement.appendChild(rowElement);
         }
@@ -207,66 +198,77 @@ class Table {
     }
 }
 
-function getDataFrame(playerArray, queueIdArray){
-    const dataFrame = {
-        TOP: {},
-        JUNGLE: {},
-        MIDDLE: {},
-        BOTTOM: {},
-        UTILITY: {},
-        positionArray: ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'],
-        championArray: []
-    };
+class DataFrame {
+    constructor(){
+        this.positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+        this.champions = [];
+    }
 
-    for (const summoner of playerArray){
-        for (const matchData of summoner.matches){
-            const {
-                championName,
-                individualPosition,
-                queueId,
-                score
-            } = matchData;
+    addChampionIfNotExists(championName){
+        if (this.champions.includes(championName) === false){
+            for (const position of this.positions){
+                this.data[position][championName] = 0;
+            }
+            this.champions.push(championName);
+        }
+    }
 
-            if (queueIdArray.includes(queueId)){
-                if (!dataFrame.championArray.includes(championName)){
-                    for (const position of positionArray){
-                        dataFrame[position][championName] = 0;
-                    }
-                    dataFrame.championArray.push(championName);
+    getMaxValue(){
+        var maxValue = 0;
+        for (const position of this.positions){
+            for (const champion of this.champions){
+                const value = this.data[position][champion];
+                if (value > maxValue){
+                    maxValue = value;
                 }
-    
-                dataFrame[individualPosition][championName] += score;
+            }
+        }
+        return maxValue;
+    }
+
+    normalizeData(){
+        const maxValue = this.getMaxValue() / 10;
+        for (const position of this.positions){
+            for (const champion of this.champions){
+                const value = this.data[position][champion];
+                this.data[position][champion] = value / maxValue;
             }
         }
     }
 
-    const valueArray = [];
-    for (const championName of championArray){
-        for (const position of positionArray){
-            valueArray.push(dataFrame[position][championName]);
-        }
+    sortChampions(){
+        this.champions.sort();
     }
 
-    const maxValue = maxArray(valueArray) / 10;
+    setData(players){
+        this.data = {
+            TOP: {},
+            JUNGLE: {},
+            MIDDLE: {},
+            BOTTOM: {},
+            UTILITY: {}
+        };
 
-    for (const championName of championArray){
-        for (const position of positionArray){
-            dataFrame[position][championName] /= maxValue; 
+        for (const player of players){
+            for (const match of player.score.list){
+                const { championName, individualPosition, score } = match;
+
+                addChampionIfNotExists(championName);
+                this.data[individualPosition][championName] += score;
+            }
         }
     }
-
-    dataFrame.championArray.sort();
-
-    return dataFrame;
 }
 
 async function main(){
-    const playerArray = await fetchAllSummoners();
+    const players = await fetchAllSummoners();
 
-    const queueIdArray = [420];
+    const df = new DataFrame();
+    df.setData(players);
+    df.normalizeData();
+    df.sortChampions();
 
-    const dataFrame = getDataFrame(playerArray, queueIdArray);
-    const table = new Table(dataFrame);
+    const table = new Table(df);
     table.reset();
     table.update();
 }
