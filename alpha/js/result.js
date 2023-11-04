@@ -124,7 +124,7 @@ class Table {
 
     reset(){
         tableBodyElement.innerHTML = '';
-        for (const position of this.champions){
+        for (const position of this.positions){
             sumElements[position].textContent = '0';
         }
     }
