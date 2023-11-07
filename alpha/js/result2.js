@@ -2,169 +2,20 @@ const tableBodyElement = document.getElementById('table-body');
 const progressElement = document.getElementById('progress');
 const playerListElement = document.getElementById('player-list');
 
-class TableRow {
-    constructor(champion, values) {
-        this.champion = champion;
-        this.positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
-    }
-
-    createHead() {
-        const head = document.createElement('th');
-        head.scope = 'row';
-        head.style.textAlign = 'center';
-
-        const img = document.createElement('img');
-        img.src = `/image/champion/${this.champion}.png`;
-        img.style.width = '36px';
-        img.style.height = '36px';
-        img.style.borderRadius = '50%';
-
-        head.appendChild(img);
-        
-        return head;
-    }
-
-    createData(value){
-        const data = document.createElement('td');
-        data.style.textAlign = 'center';
-        data.style.fontSize = '13px';
-        if (value === 0){
-            data.textContent = '-';
-        }
-        else {
-            data.textContent = value.toFixed(2);
-            data.style.opacity = Math.min(1, (value / 2));
-        }
-        return data;
-    }
-
-    createRow(){
-        const row = document.createElement('tr');
-        
-        const head = this.createHeadElement(this.champion);
-        row.appendChild(head);
-
-        for (const position of this.positions){
-            const value = this.data[position][this.champion]
-            const data = this.createData(value);
-            row.appendChild(data);
-        }
-
-        return row;
-    }
-}
-
-class Table {
-    constructor(df){
-        this.data = df.data;
-        this.champions = df.champions;
-        this.positions = df.positions;
-    }
-
-    reset(){
-        tableBodyElement.innerHTML = '';
-        for (const position of this.positions){
-            sumElements[position].textContent = '0';
-        }
-    }
-
-    createHeadElement(championName){
-        const headElement = document.createElement('th');
-        headElement.scope = 'row';
-        headElement.style.textAlign = 'center';
-
-        const imageElement = document.createElement('img');
-        imageElement.src = `/image/champion/${championName}.png`;
-        imageElement.style.width = '36px';
-        imageElement.style.height = '36px';
-        imageElement.style.borderRadius = '50%';
-
-        headElement.appendChild(imageElement);
-        
-        return headElement;
-    }
-
-    createDataElement(value){
-        const dataElement = document.createElement('td');
-        dataElement.style.textAlign = 'center';
-        dataElement.style.fontSize = '13px';
-        if (value === 0){
-            dataElement.textContent = '-';
-        }
-        else {
-            dataElement.textContent = value.toFixed(2);
-            dataElement.style.opacity = Math.min(1, (value / 2));
-        }
-        return dataElement;
-    }
-
-    createRowElement(championName){
-        const rowElement = document.createElement('tr');
-        
-        const headElement = this.createHeadElement(championName);
-        rowElement.appendChild(headElement);
-
-        for (const position of this.positions){
-            const value = this.data[position][championName]
-            const dataElement = this.createDataElement(value);
-            rowElement.appendChild(dataElement);
-        }
-
-        return rowElement;
-    }
-
-    getPositionSum(position){
-        var sum = 0;
-        for (const champion of this.champions){
-            sum += this.data[position][champion];
-        }
-        return sum;
-    }
-
-    setFootData(){
-        for (const position of this.positions){
-            const sum = this.getPositionSum(position);
-            sumElements[position].textContent = sum.toFixed(1);
-        }
-    }
-
-    update(){
-        for (const champion of this.champions){
-            const rowElement = this.createRowElement(champion);
-            tableBodyElement.appendChild(rowElement);
-        }
-        this.setFootData();
-    }
-}
-
-async function fetchChampions() {
-    try {
-        const response = await fetch('https://ioniali.github.io/static/champions.json');
-        const json = await response.json();
-        return json;
-    } catch (error) {
-        console.error(error);
-        return null;
-    }
-}
-
-async function fillTableBody() {
-    const champions = await fetchChampions();
-    if (!champions){
-        return;
-    }
-
-    for (const champion of champions) {
-
-    }
-}
-
 const sumElements = {
     TOP: document.getElementById('top-sum'),
     JUNGLE: document.getElementById('jungle-sum'),
     MIDDLE: document.getElementById('middle-sum'),
     BOTTOM: document.getElementById('bottom-sum'),
     UTILITY: document.getElementById('utility-sum'),
+}
+
+function parseHTML(string) {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = string;
+    const html = tempElement.firstChild;
+    tempElement.remove()
+    return html;
 }
 
 function fixString(string) {
@@ -336,49 +187,38 @@ class Table {
         }
     }
 
-    createHeadElement(championName){
-        const headElement = document.createElement('th');
-        headElement.scope = 'row';
-        headElement.style.textAlign = 'center';
-
-        const imageElement = document.createElement('img');
-        imageElement.src = `/image/champion/${championName.toLowerCase()}.png`;
-        imageElement.style.width = '36px';
-        imageElement.style.height = '36px';
-        imageElement.style.borderRadius = '50%';
-
-        headElement.appendChild(imageElement);
-        
-        return headElement;
+    createHead(champion) {
+        const string = `
+            <th scope="row" style="text-align: center;">
+                <img
+                    alt="${champion}"
+                    src="/image/champion/${champion}.png"
+                    style="width: 36px; height: 36px; border-radius: 50%;"
+                >
+            </th>
+        `;
+        return parseHTML(string);
     }
 
-    createDataElement(value){
-        const dataElement = document.createElement('td');
-        dataElement.style.textAlign = 'center';
-        dataElement.style.fontSize = '13px';
-        if (value === 0){
-            dataElement.textContent = '-';
-        }
-        else {
-            dataElement.textContent = value.toFixed(2);
-            dataElement.style.opacity = Math.min(1, (value / 2));
-        }
-        return dataElement;
+    createData(value) {
+        const opacity = Math.min(1, (value / 2));
+        value = value.toFixed(2);
+        const string = `<td style="text-align: center; font-size: 13px; opacity: ${opacity}">${value}</td>`;
+        return parseHTML(string);
     }
 
-    createRowElement(championName){
-        const rowElement = document.createElement('tr');
-        
-        const headElement = this.createHeadElement(championName);
-        rowElement.appendChild(headElement);
+    createRow(champion) {
+        const row = document.createElement('tr');
 
-        for (const position of this.positions){
-            const value = this.data[position][championName]
-            const dataElement = this.createDataElement(value);
-            rowElement.appendChild(dataElement);
+        const head = this.createHead(champion);
+        row.appendChild(head);
+
+        for (const position of this.positions) {
+            const value = this.data[position][champion];
+            const data = this.createData(value);
+            row.appendChild(data);
         }
-
-        return rowElement;
+        return row;
     }
 
     getPositionSum(position){
@@ -398,7 +238,7 @@ class Table {
 
     update(){
         for (const champion of this.champions){
-            const rowElement = this.createRowElement(champion);
+            const rowElement = this.createRow(champion);
             tableBodyElement.appendChild(rowElement);
         }
         this.setFootData();
