@@ -10,58 +10,117 @@ const sumElements = {
     UTILITY: document.getElementById('utility-sum'),
 }
 
-function getSummoners(){
-    const url = new URL(window.location.href);
-    const searchParams = url.searchParams;
-    const summoners = searchParams.get('summoners').split(',');
-    const array = [];
-    for (const summoner of summoners){
-        const parts = fixString(summoner).split('_');
-        const platformId = parts[0];
-        const summonerName = parts[1];
-        
-        if (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName)){
-            array.push({platformId, summonerName});
-        }
-        else {
-            console.error('Region or name is not valid');
-        }
-    }
-    return array;
-}
-
-function fixString(string){
+function fixString(string) {
     string = string.replace(/\s/g, '');
     return string.toLowerCase();
 }
 
-function isPlatformIdValid(platformId){
+function isPlatformIdValid(platformId) {
     return ['euw', 'tr'].includes(platformId);
 }
 
-function isSummonerNameValid(summonerName){
+function isSummonerNameValid(summonerName) {
     return !(summonerName.length > 16 || summonerName.length < 3);
 }
 
-async function fetchSummoner(platformId, summonerName){
-    try {
-        const response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
-        const player = await response.json();
-        renderPlayer(player.summoner, player.league);
-        return player;
-    }
-    catch (error){
-        console.error('Fetch summoner failed');
-    }
+function isSummonerValid(platformId, summonerName) {
+    return (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName));
 }
 
-function fetchAllSummoners(){
-    const summonerArray = getSummonerArray();
+function getParamFromURL(key) {
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+    const param = searchParams.get(key);
+
+    if (!param) {
+        throw new Error(`URL parameters does not have ${key}`);
+    }
+
+    return param;
+}
+
+function parseSummoner(string) {
+    const parts = fixString(string).split('_');
+
+    if (parts.length !== 2){
+        throw new Error('Summoner string is not valid');
+    }
+
+    const platformId = parts[0];
+    const summonerName = parts[1];
+    
+    if (!isSummonerValid(platformId, summonerName)) {
+        throw new Error('Summoner is not valid');
+    }
+
+    return { platformId, summonerName };
+}
+
+function getSummoners() {
+    var summonerParam;
+
+    try {
+        summonerParam = getParamFromURL('summoners');
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+
+    const summonerParts = summonerParam.split(',');
+
+    const resultArray = [];
+    for (const summonerStr of summonerParts) {
+        try {
+            const summoner = parseSummoner(summonerStr);
+            resultArray.push(summoner);
+        }
+        catch (error) {
+            console.error('Error while parsing summoner');
+            console.error(error);
+        }
+    }
+
+    return resultArray;
+}
+
+async function fetchPlayer(platformId, summonerName) {
+    var response;
+    try {
+        response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
+    }
+    catch (error) {
+        throw new Error('Error while fetching player');
+    }
+
+    var player;
+    try {
+        player = await response.json();
+    }
+    catch (error) {
+        throw new Error('Error while parsing fetch response of player');
+    }
+
+    renderPlayer(player.summoner, player.league);
+    return player;
+}
+
+function fetchPlayers() {
+    const summoners = getSummoners();
 
     const promises = [];
 
-    for (const summoner of summonerArray){
-        const promise = fetchSummoner(summoner.platformId, summoner.summonerName);
+    for (const summoner of summoners){
+        const promise = async () => {
+            try {
+                const result = await fetchPlayer(summoner.platformId, summoner.summonerName);
+                return result;
+            }
+            catch (error){
+                console.error(error);
+                return null;
+            }
+        }
         promises.push(promise);
     }
 
@@ -266,7 +325,7 @@ class DataFrame {
 }
 
 async function main(){
-    const players = await fetchAllSummoners();
+    const players = await fetchPlayers();
     
     progressElement.remove();
 
