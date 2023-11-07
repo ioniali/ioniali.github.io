@@ -111,7 +111,7 @@ function fetchPlayers() {
     const promises = [];
 
     for (const summoner of summoners){
-        const promise = async () => {
+        const promise = (async () => {
             try {
                 const result = await fetchPlayer(summoner.platformId, summoner.summonerName);
                 return result;
@@ -120,7 +120,7 @@ function fetchPlayers() {
                 console.error(error);
                 return null;
             }
-        }
+        })();
         promises.push(promise);
     }
 
