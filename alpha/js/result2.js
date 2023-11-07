@@ -10,14 +10,6 @@ const sumElements = {
     UTILITY: document.getElementById('utility-sum'),
 }
 
-function parseHTML(string) {
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = string;
-    const html = tempElement.firstChild;
-    tempElement.remove()
-    return html;
-}
-
 function fixString(string) {
     string = string.replace(/\s/g, '');
     return string.toLowerCase();
@@ -174,7 +166,7 @@ function renderPlayer(summoner, league) {
 }
 
 class Table {
-    constructor(df){
+    constructor(df) {
         this.data = df.data;
         this.champions = df.champions;
         this.positions = df.positions;
@@ -188,7 +180,7 @@ class Table {
     }
 
     createHead(champion) {
-        const string = `
+        return `
             <th scope="row" style="text-align: center;">
                 <img
                     alt="${champion}"
@@ -197,27 +189,28 @@ class Table {
                 >
             </th>
         `;
-        return parseHTML(string);
     }
 
     createData(value) {
         const opacity = Math.min(1, (value / 2));
         value = value.toFixed(2);
-        const string = `<td style="text-align: center; font-size: 13px; opacity: ${opacity}">${value}</td>`;
-        return parseHTML(string);
+        return `<td style="text-align: center; font-size: 13px; opacity: ${opacity};">${value}</td>`;
     }
 
     createRow(champion) {
         const row = document.createElement('tr');
+        var bodyString = '';
 
         const head = this.createHead(champion);
-        row.appendChild(head);
+        bodyString += head;
 
         for (const position of this.positions) {
             const value = this.data[position][champion];
             const data = this.createData(value);
-            row.appendChild(data);
+            bodyString += data;
         }
+
+        row.innerHTML = bodyString;
         return row;
     }
 
