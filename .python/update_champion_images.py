@@ -31,6 +31,6 @@ live_version = get_live_version()
 champion_dict = get_champion_dict(version=live_version)
 
 for key in champion_dict.keys():
-    path = f'image/champion/{key.lower()}.png'
+    path = f'static/image/champion/{key}.png'
     download_image(version=live_version, name=key, path=path)
     process_image(path=path)

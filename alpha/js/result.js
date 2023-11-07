@@ -58,11 +58,9 @@ function parseSummoner(string) {
 
 function getSummoners() {
     var summonerParam;
-
     try {
         summonerParam = getParamFromURL('summoners');
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         return null;
     }
@@ -74,8 +72,7 @@ function getSummoners() {
         try {
             const summoner = parseSummoner(summonerStr);
             resultArray.push(summoner);
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Error while parsing summoner');
             console.error(error);
         }
@@ -88,46 +85,35 @@ async function fetchPlayer(platformId, summonerName) {
     var response;
     try {
         response = await fetch(`https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`);
-    }
-    catch (error) {
-        throw new Error('Error while fetching player');
+    } catch (error) {
+        console.error(error);
+        return null;
     }
 
     var player;
     try {
         player = await response.json();
-    }
-    catch (error) {
-        throw new Error('Error while parsing fetch response of player');
+    } catch (error) {
+        console.error(error);
+        return null;
     }
 
-    renderPlayer(player.summoner, player.league);
+    //renderPlayer(player.summoner, player.league);
     return player;
 }
 
 function fetchPlayers() {
     const summoners = getSummoners();
 
-    const promises = [];
-
-    for (const summoner of summoners){
-        const promise = (async () => {
-            try {
-                const result = await fetchPlayer(summoner.platformId, summoner.summonerName);
-                return result;
-            }
-            catch (error){
-                console.error(error);
-                return null;
-            }
-        })();
-        promises.push(promise);
-    }
+    const promises = summoners.map((summoner) => {
+        const { platformId, summonerName } = summoner;
+        return fetchPlayer(platformId, summonerName);
+    });
 
     return Promise.all(promises);
 }
 
-function renderPlayer(summoner, league){
+function renderPlayer(summoner, league) {
     const htmlStr = 
 `
 <div style="display: flex;">
