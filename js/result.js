@@ -36,7 +36,7 @@ function getSummoners() {
 
     function parse(string) {
         const [platformId, summonerName] = fixString(string).split('_');
-        if ((!platformId || !summonerName) || isSummonerValid(platformId, summonerName)) {
+        if ((!platformId || !summonerName) || !isSummonerValid(platformId, summonerName)) {
             return null;
         }
         return { platformId, summonerName };
@@ -76,11 +76,6 @@ async function fetchJson(url) {
 }
 
 class DataFrame {
-    constructor() {
-        this.positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
-        this.resetDF();
-    }
-
     async initialize() {
         this.champions = await fetchJson('https://ioniali.github.io/static/champions.json');
         this.positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
@@ -91,9 +86,12 @@ class DataFrame {
         for (const position of this.positions) {
             for (const champion of this.champions) {
                 this.map[position] = { [champion]: 0 };
-                this.championSum[champion] = 0;
             }
             this.positionSum[position] = 0;
+        }
+
+        for (const champion of this.champions) {
+            this.championSum[champion] = 0;
         }
     }
 
@@ -120,9 +118,13 @@ class DataFrame {
         const maxValue = this.getMaxValue() / 10;
         for (const position of this.positions){
             for (const champion of this.champions){
-                const value = this.map[position][champion];
-                this.map[position][champion] = value / maxValue;
+                this.map[position][champion] /= maxValue;
             }
+            this.positionSum[position] /= maxValue;
+        }
+
+        for (const champion of this.champions) {
+            this.championSum[champion] /= maxValue;
         }
     }
 }
