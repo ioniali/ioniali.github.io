@@ -100,12 +100,10 @@ async function main(){
 
         const tableRowHead = document.createElement('th');
         tableRowHead.scope = 'row';
-        tableRowHead.style.textAlign = 'center';
 
         const headImage = document.createElement('img');
-        headImage.src = `/image/champion/${championName.toLowerCase()}.png`;
-        headImage.style.width = '36px';
-        headImage.style.height = '36px';
+        headImage.src = `/static/image/champion/${championName}.png`;
+        headImage.className == 'table-head-image';
         headImage.style.borderRadius = '50%';
         tableRowHead.appendChild(headImage);
 
@@ -114,8 +112,7 @@ async function main(){
         for (const position of positionArray){
             const value = dataFrame[position][championName];
             const tableData = document.createElement('td');
-            tableData.style.textAlign = 'center';
-            tableData.style.fontSize = '13px';
+            tableData.style.fontSize = '14px';
             if (value === 0){
                 tableData.textContent = '-';
             }
