@@ -1,20 +1,6 @@
 const tableBody = document.getElementById('table-body');
 const fetchProgress = document.getElementById('fetch-progress');
 
-function getSummonerArray(){
-    const url = new URL(window.location.href);
-    const searchParams = url.searchParams;
-    const summoners = searchParams.get('summoners').split(',');
-    const summonerArray = [];
-    for (const summoner of summoners){
-        const parts = fixString(summoner).split('_');
-        const platformId = parts[0];
-        const summonerName = parts[1];
-        summonerArray.push({platformId: platformId, summonerName: summonerName});
-    }
-    return summonerArray;
-}
-
 function fixString(string){
     string = string.replace(/\s/g, '');
     return string.toLowerCase();
@@ -28,128 +14,184 @@ function isSummonerNameValid(summonerName){
     return !(summonerName.length > 16 || summonerName.length < 3);
 }
 
-function maxArray(array){
-    return Math.max(...array);
+function isSummonerValid(platformId, summonerName) {
+    return (isPlatformIdValid(platformId) && isSummonerNameValid(summonerName));
 }
 
-function sumArray(array){
-    var sum = 0;
-    for (const value of array){
-        sum += value;
+function getParamFromURL(key) {
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+    const param = searchParams.get(key);
+    if (!param) {
+        return null;
     }
-    return sum;
+    return param;
 }
 
-async function main(){
-    const summonerArray = getSummonerArray();
-
-    const positionArray = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
-
-    const dataFrame = {};
-    for (const position of positionArray){
-        dataFrame[position] = {};
+function getSummoners() {
+    const param = getParamFromURL('summoners');
+    if (!param) {
+        return [];
     }
 
-    const championArray = [];
+    function parse(string) {
+        const [platformId, summonerName] = fixString(string).split('_');
+        if ((!platformId || !summonerName) || isSummonerValid(platformId, summonerName)) {
+            return null;
+        }
+        return { platformId, summonerName };
+    }
 
-    for (const summoner of summonerArray){
-        if (isPlatformIdValid(summoner.platformId) && isSummonerNameValid(summoner.summonerName)){
-            try {
-                const response = await fetch(`https://jarvan.ddns.net/api/player/${summoner.platformId}/${summoner.summonerName}`);
-                const player = await response.json();
-                
-                for (const matchData of player.score.list){
-                    const { championName, individualPosition, score } = matchData;
-                    if (!championArray.includes(championName)){
-                        for (const position of positionArray){
-                            dataFrame[position][championName] = 0;
-                        }
-                        championArray.push(championName);
-                    }
+    const parts = param.split(',');
+    return parts.map(part => parse(part));
+}
 
-                    dataFrame[individualPosition][championName] += score;
+function fetchPlayers(summoners) {
+    const promises = summoners.map((summoner) => {
+        const { platformId, summonerName}  = summoner;
+        const url = `https://jarvan.ddns.net/api/player/${platformId}/${summonerName}`;
+        return fetchJson(url);
+    });
+    return Promise.all(promises);
+}
+
+async function fetchJson(url) {
+    var response;
+    try {
+        response = await fetch(url);
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+
+    var json;
+    try {
+        json = await response.json();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+
+    return json;
+}
+
+class DataFrame {
+    constructor() {
+        this.positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+        this.resetDF();
+    }
+
+    async initialize() {
+        this.champions = await fetchJson('https://ioniali.github.io/static/champions.json');
+        this.positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+        this.map = {};
+        this.championSum = {};
+        this.positionSum = {};
+
+        for (const position of this.positions) {
+            for (const champion of this.champions) {
+                this.map[position] = { [champion]: 0 };
+                this.championSum[champion] = 0;
+            }
+            this.positionSum[position] = 0;
+        }
+    }
+
+    appendData(position, champion, value) {
+        this.map[position][champion] += value;
+        this.championSum[champion] += value;
+        this.positionSum[position] += value;
+    }
+
+    getMaxValue() {
+        var maxValue = 0;
+        for (const position of this.positions){
+            for (const champion of this.champions){
+                const value = this.map[position][champion];
+                if (value > maxValue){
+                    maxValue = value;
                 }
             }
-            catch (error){
-                ;
+        }
+        return maxValue;
+    }
+
+    normalizeData(){
+        const maxValue = this.getMaxValue() / 10;
+        for (const position of this.positions){
+            for (const champion of this.champions){
+                const value = this.map[position][champion];
+                this.map[position][champion] = value / maxValue;
+            }
+        }
+    }
+}
+
+async function main() {
+    const summoners = getSummoners();
+    const players = await fetchPlayers(summoners);
+    const df = new DataFrame();
+
+    for (const player of players) {
+        if (player) {
+            for (const match of player.score.list) {
+                const { championName, individualPosition, score } = match;
+                df.appendData(individualPosition, championName, score);
             }
         }
     }
 
-    const valueArray = [];
-    for (const championName of championArray){
-        for (const position of positionArray){
-            valueArray.push(dataFrame[position][championName]);
+    df.normalizeData();
+    
+    for (const champion of df.champions){
+        if (df.championSum[champion] !== 0) {
+            const tableRow = document.createElement('tr');
+
+            const tableRowHead = document.createElement('th');
+            tableRowHead.scope = 'row';
+
+            const headImage = document.createElement('img');
+            headImage.src = `/static/image/champion/${champion}.png`;
+            headImage.className = 'table-head-img';
+            headImage.style.borderRadius = '50%';
+            tableRowHead.appendChild(headImage);
+
+            tableRow.appendChild(tableRowHead);
+
+            for (const position of df.positions){
+                const value = df.map[position][champion];
+                const tableData = document.createElement('td');
+                tableData.style.fontSize = '14px';
+                if (value === 0){
+                    tableData.textContent = '-';
+                }
+                else {
+                    tableData.textContent = value.toFixed(1);
+                    tableData.style.opacity = Math.min(1, (value / 2));
+                }
+                tableRow.appendChild(tableData);
+            }
+
+            tableBody.appendChild(tableRow);
         }
     }
 
-    const maxValue = maxArray(valueArray) / 10;
+    const topSumData = document.getElementById('top-sum');
+    topSumData.textContent = df.positionSum.TOP.toFixed(2);
 
-    for (const championName of championArray){
-        for (const position of positionArray){
-            dataFrame[position][championName] /= maxValue; 
-        }
-    }
+    const jungleSumData = document.getElementById('jungle-sum');
+    jungleSumData.textContent = df.positionSum.JUNGLE.toFixed(2);
 
-    championArray.sort();
+    const middleSumData = document.getElementById('middle-sum');
+    middleSumData.textContent = df.positionSum.MIDDLE.toFixed(2);
+
+    const bottomSumData = document.getElementById('bottom-sum');
+    bottomSumData.textContent = df.positionSum.BOTTOM.toFixed(2);
+
+    const utilitySumData = document.getElementById('utility-sum');
+    utilitySumData.textContent = df.positionSum.UTILITY.toFixed(2);
 
     fetchProgress.remove();
-    
-    for (const championName of championArray){
-        const tableRow = document.createElement('tr');
-
-        const tableRowHead = document.createElement('th');
-        tableRowHead.scope = 'row';
-
-        const headImage = document.createElement('img');
-        headImage.src = `/static/image/champion/${championName}.png`;
-        headImage.className = 'table-head-img';
-        headImage.style.borderRadius = '50%';
-        tableRowHead.appendChild(headImage);
-
-        tableRow.appendChild(tableRowHead);
-
-        for (const position of positionArray){
-            const value = dataFrame[position][championName];
-            const tableData = document.createElement('td');
-            tableData.style.fontSize = '14px';
-            if (value === 0){
-                tableData.textContent = '-';
-            }
-            else {
-                tableData.textContent = value.toFixed(2);
-                tableData.style.opacity = Math.min(1, (value / 2));
-            }
-            tableRow.appendChild(tableData);
-        }
-
-        tableBody.appendChild(tableRow);
-    }
-
-    const topArray = championArray.map(championName => dataFrame.TOP[championName]);
-    const topSum = sumArray(topArray);
-    const topSumData = document.getElementById('top-sum');
-    topSumData.textContent = topSum.toFixed(2);
-
-    const jungleArray = championArray.map(championName => dataFrame.JUNGLE[championName]);
-    const jungleSum = sumArray(jungleArray);
-    const jungleSumData = document.getElementById('jungle-sum');
-    jungleSumData.textContent = jungleSum.toFixed(2);
-
-    const middleArray = championArray.map(championName => dataFrame.MIDDLE[championName]);
-    const middleSum = sumArray(middleArray);
-    const middleSumData = document.getElementById('middle-sum');
-    middleSumData.textContent = middleSum.toFixed(2);
-
-    const bottomArray = championArray.map(championName => dataFrame.BOTTOM[championName]);
-    const bottomSum = sumArray(bottomArray);
-    const bottomSumData = document.getElementById('bottom-sum');
-    bottomSumData.textContent = bottomSum.toFixed(2);
-
-    const utilityArray = championArray.map(championName => dataFrame.UTILITY[championName]);
-    const utilitySum = sumArray(utilityArray);
-    const utilitySumData = document.getElementById('utility-sum');
-    utilitySumData.textContent = utilitySum.toFixed(2);
 }
 
 main();
