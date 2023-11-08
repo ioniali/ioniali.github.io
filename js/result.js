@@ -103,7 +103,7 @@ async function main(){
 
         const headImage = document.createElement('img');
         headImage.src = `/static/image/champion/${championName}.png`;
-        headImage.className == 'table-head-image';
+        headImage.className = 'table-head-image';
         headImage.style.borderRadius = '50%';
         tableRowHead.appendChild(headImage);
 
