@@ -3,10 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/css/pico.min.css">
-  <link rel="stylesheet" href="/css/my.css">
   <link rel="icon" href="/static/image/favicon.png" type="image/png">
   <title>Jarvan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
   <main class="container">
@@ -15,20 +14,6 @@
       <h3>Each player's performance on champions grouped by roles. The performance scores range from 0 to 10, with higher values indicating better performance.</h3>
     </hgroup>
     <progress id="fetch-progress" style="width: 75%;"></progress>
-    <style>
-      th {
-        text-align: center;
-      }
-
-      .table-head-img {
-        width: 36px;
-        height: fit-content;
-      }
-
-      td {
-        text-align: center;
-      }
-    </style>
     <table style="width: 75%;">
       <thead>
         <tr>
