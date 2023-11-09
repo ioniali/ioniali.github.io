@@ -102,11 +102,15 @@ class DataFrame {
         this.positionSum[position] += value;
     }
 
+    getData(position, champion) {
+        return this.map[position][champion];
+    }
+
     getMaxValue() {
         var maxValue = 0;
         for (const position of this.positions){
             for (const champion of this.champions){
-                const value = this.map[position][champion];
+                const value = this.getData(position, champion);
                 if (value > maxValue){
                     maxValue = value;
                 }
@@ -150,22 +154,23 @@ async function main() {
     for (const champion of df.champions){
         if (df.championSum[champion] !== 0) {
             const tableRow = document.createElement('tr');
+            tableBody.appendChild(tableRow);
 
             const tableRowHead = document.createElement('th');
+            tableRow.appendChild(tableRowHead);
             tableRowHead.scope = 'row';
 
             const headImage = document.createElement('img');
-            headImage.src = `/static/image/champion/${champion}.png`;
-            headImage.className = 'table-head-img';
-            headImage.style.borderRadius = '50%';
             tableRowHead.appendChild(headImage);
-
-            tableRow.appendChild(tableRowHead);
+            headImage.src = `/static/image/champion/${champion}.png`;
+            headImage.className = 'table-head-img round-img';
 
             for (const position of df.positions){
-                const value = df.map[position][champion];
                 const tableData = document.createElement('td');
+                tableRow.appendChild(tableData);
                 tableData.style.fontSize = '14px';
+                
+                const value = df.getData(position, champion);
                 if (value === 0){
                     tableData.textContent = '-';
                 }
@@ -173,10 +178,7 @@ async function main() {
                     tableData.textContent = value.toFixed(1);
                     tableData.style.opacity = Math.min(1, (value / 2));
                 }
-                tableRow.appendChild(tableData);
             }
-
-            tableBody.appendChild(tableRow);
         }
     }
 
