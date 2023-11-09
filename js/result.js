@@ -84,8 +84,9 @@ class DataFrame {
         this.positionSum = {};
 
         for (const position of this.positions) {
+            this.map[position] = {}
             for (const champion of this.champions) {
-                this.map[position] = { [champion]: 0 };
+                this.map[position][champion] = 0;
             }
             this.positionSum[position] = 0;
         }
@@ -133,6 +134,7 @@ async function main() {
     const summoners = getSummoners();
     const players = await fetchPlayers(summoners);
     const df = new DataFrame();
+    await df.initialize();
 
     for (const player of players) {
         if (player) {
