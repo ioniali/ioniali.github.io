@@ -9,9 +9,8 @@ function showElement(element) {
     element.classList.remove('visually-hidden');
 }
 
-function fixString(string){
-    string = string.replace(/\s/g, '');
-    return string.toLowerCase();
+function clearString(string){
+    return string.replace(/\s/g, '').toLowerCase();
 }
 
 function isPlatformIdValid(platformId){
@@ -53,7 +52,7 @@ function getSummoners() {
     }
 
     function parse(string) {
-        const [platformId, riotId] = fixString(string).split('@');
+        const [platformId, riotId] = clearString(string).split('@');
         if ((!platformId || !riotId) || !isPlayerValid(platformId, riotId)) {
             return null;
         }
@@ -168,7 +167,7 @@ async function main() {
 
     df.normalizeData();
 
-    for (const champion of df.champions.reverse()){
+    for (const champion of df.champions.reverse()) {
         if (df.championSum[champion] !== 0) {
             const newChampionTR = championTR.cloneNode(true);
             showElement(newChampionTR);
@@ -176,34 +175,22 @@ async function main() {
 
             newChampionTR.querySelector('#champion-th-img').src = `assets/img/champions-square/${champion}.png`;
 
-            for (const position of df.positions){
+            for (const position of df.positions) {
                 const value = df.getData(position, champion);
                 const positionTD = newChampionTR.querySelector(`#${position.toLowerCase()}-td`);
-                if (value !== 0){
+                if (value !== 0) {
                     positionTD.textContent = value.toFixed(1);
                     if (value < 1) {
                         positionTD.style.opacity = Math.min(value + 0.2, 1);
-                    } else if (value > 5) {
-                        var currentColor = window.getComputedStyle(positionTD).color;
-                        var [R, G, B] = currentColor.match(/\d+/g);
-
-                        const scale = (value / 10);
-                        R = Math.min(Math.max(R * (scale + 0.5), 0), 255);
-                        G = Math.min(Math.max(G * (1 - scale), 0), 255);
-                        B = Math.min(Math.max(B * (1 - scale), 0), 255);
-                      
-                        // Apply the modified color
-                        var newColor = `rgb(${R},${G},${B})`;
-                        positionTD.style.color = newColor;
                     }
                 }
             }
         }
     }
 
-    for (const position of df.positions){
+    for (const position of df.positions) {
         const value = df.positionSum[position];
-        if (value !== 0){
+        if (value !== 0) {
             document.getElementById(`${position.toLowerCase()}-sum-th`).textContent = value.toFixed(1);
         }
     }
